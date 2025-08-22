@@ -1,3 +1,4 @@
+
 local args = {
     [1] = "setup"
 }
@@ -108,7 +109,6 @@ textButton.Font = Enum.Font.SourceSansBold
 textButton.BorderColor3 = Color3.new(255, 0, 0)
 textButton.BorderSizePixel = 5
 textButton.MouseButton1Click:Connect(function()
-
 
 local player = game.Players.LocalPlayer
    local character = player.Character
@@ -245,7 +245,7 @@ local player = game.Players.LocalPlayer
    local humanoid = character:FindFirstChildWhichIsA("Humanoid")
 
    if humanoid then
-       humanoid.WalkSpeed = 17
+       humanoid.WalkSpeed = 30
 
 
 local player = game.Players.LocalPlayer
@@ -263,6 +263,7 @@ local player = game.Players.LocalPlayer
     end
   end        
 end
+
 end)
 
 local players = game:GetService("Players")
@@ -350,3 +351,106 @@ game:GetService("ReplicatedStorage"):WaitForChild("RetroAbility"):FireServer(unp
 
 
 end)
+
+local players = game:GetService("Players")
+local player = players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TestGui"
+screenGui.Parent = playerGui
+
+local textButton = Instance.new("TextButton")
+textButton.Name = "FourthTextButton"
+textButton.Parent = screenGui
+textButton.Size = UDim2.new(0, 50, 0, 50)
+textButton.Position = UDim2.new(0.5, 230, 0.5, -50)
+textButton.BackgroundColor3 = Color3.new(0.389, 0, 0)
+textButton.Draggable = true
+
+textButton.Text = "F"
+textButton.TextColor3 = Color3.new(255, 255, 255)
+textButton.TextScaled = true
+textButton.Font = Enum.Font.SourceSansBold
+textButton.BorderColor3 = Color3.new(255, 0, 0)
+textButton.BorderSizePixel = 5
+
+textButton.MouseButton1Click:Connect(function()
+    local localPlayer = players.LocalPlayer
+    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    local function findClosestPlayer()
+        local closestPlayer = nil
+        local shortestDistance = math.huge
+
+        for _, otherPlayer in ipairs(players:GetPlayers()) do
+            if otherPlayer ~= localPlayer and otherPlayer.Character then
+                local targetCharacter = otherPlayer.Character
+                local targetRootPart = targetCharacter:WaitForChild("HumanoidRootPart")
+                
+                local distance = (rootPart.Position - targetRootPart.Position).magnitude
+                
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestPlayer = otherPlayer
+                end
+            end
+        end
+        return closestPlayer
+    end
+
+    local function teleportBehindClosestPlayer()
+        local closestPlayer = findClosestPlayer()
+        
+        if closestPlayer and closestPlayer.Character then
+            local targetCharacter = closestPlayer.Character
+            local targetRootPart = targetCharacter:WaitForChild("HumanoidRootPart")
+            
+            local newPositionCFrame = targetRootPart.CFrame * CFrame.new(0, 0, 5)
+            
+            rootPart.CFrame = newPositionCFrame
+        end
+    end
+    
+    -- Call the function to teleport when the button is clicked
+    teleportBehindClosestPlayer()
+
+
+-- Get necessary services and the player
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Wait for the player's character to be added
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Wait for the character's humanoid and animator to be ready
+local humanoid = character:WaitForChild("Humanoid")
+local animator = humanoid:WaitForChild("Animator")
+
+-- Create a new Animation instance
+local animation = Instance.new("Animation")
+
+-- Set the AnimationId to your animation's ID. Replace 'rbxassetid://16144816662'
+animation.AnimationId = "rbxassetid://92312423604989" 
+
+-- Load the animation into an AnimationTrack
+local animationTrack = animator:LoadAnimation(animation)
+
+-- Play the animation
+animationTrack:Play()
+
+
+wait(0.20)
+
+
+local args = {
+    [1] = "Ban Hammer"
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("RetroAbility"):FireServer(unpack(args))
+
+
+end)
+
+
